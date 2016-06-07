@@ -46,3 +46,94 @@ CALC_ELEMENT * create_log (CALC_ELEMENT * e) {
   res->right = NULL;
   return res;
 }
+
+void free_calc_element (CALC_ELEMENT * e) {
+  if (e == NULL)
+    return;
+  switch (e->calc_t) {
+  case CALC_NUM:
+  case CALC_X:
+    free (e);
+    break;
+  case CALC_BIN_OP:
+    free_calc_element(e->left);
+    free_calc_element(e->right);
+    free (e);
+    break;
+  case CALC_LOG:
+    free_calc_element(e->left);
+    free (e);
+    break;
+  }
+}
+
+int calculate (CALC_ELEMENT ** e) {
+  int res = 0;
+  CALC_ELEMENT * loc = *e;
+  switch (loc->calc_t) {
+  case CALC_NUM:
+    return 0;
+    break;
+  case CALC_X: /* should not ever happen */
+    return -1;
+    break;
+  case CALC_BIN_OP:
+    /* first validate the left and the right side of the equation */
+    if ((calculate (&loc->left) == 0) && (calculate (&loc->right) == 0)) {
+      switch (loc->bin_op) {
+      case '+':
+	*e = create_number (loc->value * (loc->left->value + loc->right->value));
+	free_calc_element (loc);
+	return 0;
+	break;
+      case '-':
+	*e = create_number (loc->value * (loc->left->value - loc->right->value));
+	free_calc_element (loc);
+	return 0;
+	break;
+      case '*':
+	*e = create_number (loc->value * (loc->left->value * loc->right->value));
+	free_calc_element (loc);
+	return 0;
+	break;
+      case '/':
+	/* we must check the right side for zero */
+	if (loc->right-> value == 0.0) {
+	  loc->status |= STATUS_CALC_DIV_BY_ZERO;
+	  return -1;
+	} else {
+	  *e = create_number (loc->value * (loc->left->value / loc->right->value));
+	  free_calc_element (loc);
+	  return 0;
+	}
+	break;
+      }
+    } else {
+      loc->status |= loc->left->status | loc->right->status;
+      return -1;
+    }
+    break;
+  case CALC_LOG:
+    if (calculate (&loc->left) == 0) {
+      if (loc->left->calc_t == CALC_NUM) {
+	if (loc->left->value <= 0.0) {
+	  loc->status |= STATUS_CALC_DOMAIN;
+	  return -1;
+	} else {
+	  /* replace the log element with a number */
+	  *e = create_number (log(loc->left->value) * loc->value);
+	  free_calc_element (loc);
+	  return 0;
+	}
+      } else { /* this should also never happen */
+	return -1;
+      }
+    } else {
+      loc->status |= loc->left->status;
+      return -1;
+    }
+    break;
+  }
+  return res;
+}
+

@@ -19,8 +19,8 @@
 
 typedef enum {
   CALC_NUM,
-  CALC_BIN_OP,
   CALC_X,
+  CALC_BIN_OP,
   CALC_LOG // could be placeholder for other unary functions
 } CALC_TYPE;
 
@@ -42,6 +42,6 @@ CALC_ELEMENT * create_log (CALC_ELEMENT *);
 
 void free_calc_element (CALC_ELEMENT *);
 
-void salculate (CALC_ELEMENT **);
+int calculate (CALC_ELEMENT **);
 
 #endif
