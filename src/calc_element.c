@@ -21,6 +21,8 @@ CALC_ELEMENT * create_bin_op (char op, CALC_ELEMENT * l, CALC_ELEMENT * r) {
   res->status = l->status | r->status;
   if (op == '*' && (l->status & STATUS_X_PRESENT) && (r->status & STATUS_X_PRESENT))
     res->status |= STATUS_X_NON_LINEAR;
+  if (op == '/' && (res->status & STATUS_X_PRESENT))
+    res->status |= STATUS_X_IN_DIV;
   res->value = 1.0;
   res->left = l;
   res->right = r;
@@ -40,7 +42,9 @@ CALC_ELEMENT * create_x (void) {
 CALC_ELEMENT * create_log (CALC_ELEMENT * e) {
   CALC_ELEMENT * res = (CALC_ELEMENT *)malloc(sizeof(CALC_ELEMENT));
   res->calc_t = CALC_LOG;
-  res->status = 0;
+  res->status = e->status;
+  if (res->status & STATUS_X_PRESENT)
+    res->status |= STATUS_X_IN_LOG;
   res->value = 1.0;
   res->left = e;
   res->right = NULL;
