@@ -17,8 +17,10 @@ CALC_ELEMENT * create_number (double val) {
 CALC_ELEMENT * create_bin_op (char op, CALC_ELEMENT * l, CALC_ELEMENT * r) {
   CALC_ELEMENT * res = (CALC_ELEMENT *)malloc(sizeof(CALC_ELEMENT));
   res->calc_t = CALC_BIN_OP;
-  res->bin_op = op;
+  res->bin_op = (op != '-' ? op : '+'); /* simplification of substraction */
   res->status = l->status | r->status;
+  if (op == '-')
+    r->value += -1.0;
   if (op == '*' && (l->status & STATUS_X_PRESENT) && (r->status & STATUS_X_PRESENT))
     res->status |= STATUS_X_NON_LINEAR;
   if (op == '/' && (res->status & STATUS_X_PRESENT))
@@ -87,11 +89,6 @@ int calculate (CALC_ELEMENT ** e) {
       switch (loc->bin_op) {
       case '+':
 	*e = create_number (loc->value * (loc->left->value + loc->right->value));
-	free_calc_element (loc);
-	return 0;
-	break;
-      case '-':
-	*e = create_number (loc->value * (loc->left->value - loc->right->value));
 	free_calc_element (loc);
 	return 0;
 	break;
