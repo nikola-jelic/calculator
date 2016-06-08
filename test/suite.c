@@ -153,7 +153,7 @@ void test_create_access_axb (void) {
 }
 
 void test_bad_axb (void) {
-  CALC_ELEMENT * t1, *t2, *t3, *t4;
+  CALC_ELEMENT * t1, *t2, *t3;
   double a, b;
   /* log */
   t2 = create_number(6.0);
@@ -188,8 +188,163 @@ void test_bad_axb (void) {
   free_calc_element (t1);
 }
 
+void test_calc_good (void) {
+  CALC_ELEMENT *t1, *t2;
+  /* single number */
+  t1 = create_number (12.0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, 12.0);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+  
+  /* addition */
+  t1 = create_number (2.0);
+  t2 = create_number (-3.5);
+  t1 = create_bin_op ('+', t1, t2);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, -1.5);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+
+  /* substraction */
+  t1 = create_number (-3.0);
+  t2 = create_number (-4.25);
+  t1 = create_bin_op ('-', t1, t2);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, 1.25);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+
+  /* multiplication */
+  t1 = create_number (4);
+  t2 = create_number (1.25);
+  t1 = create_bin_op ('*', t1, t2);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, 5.0);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+
+  /* division */
+  t1 = create_number (8.0);
+  t2 = create_number (16.0);
+  t1 = create_bin_op ('/', t1, t2);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, 0.5);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+  
+  /* natural logarithm */
+  t1 = create_number (1.0);
+  t1 = create_log (t1);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, 0.0);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+
+  t1 = create_number (M_E);
+  t1 = create_log (t1);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, 1.0);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+
+  /* a slightly more complex example (3 + (4 - 1)) * 5 */
+  t1 = create_number (4);
+  t2 = create_number (1);
+  t2 = create_bin_op ('-', t1, t2);
+  t1 = create_number (3);
+  t1 = create_bin_op ('+', t1, t2);
+  t2 = create_number (5);
+  t1 = create_bin_op ('*', t1, t2);
+  CU_ASSERT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_PTR_NOT_NULL (t1);
+  CU_ASSERT_EQUAL (t1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (t1->status, 0);
+  CU_ASSERT_EQUAL (t1->value, 30.0);
+  CU_ASSERT_PTR_NULL (t1->left);
+  CU_ASSERT_PTR_NULL (t1->right);
+  free_calc_element (t1);
+}
+
+void test_calc_bad (void) {
+  CALC_ELEMENT *t1, *t2;
+  /* division by zero, simple */
+  t1 = create_number (9.0);
+  t2 = create_number (0.0);
+  t1 = create_bin_op ('/', t1, t2);
+  CU_ASSERT_NOT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_EQUAL (t1->status & STATUS_CALC_DIV_BY_ZERO, STATUS_CALC_DIV_BY_ZERO);
+  free_calc_element (t1);
+  /* division by zero, complex */
+  t1 = create_bin_op ('/', create_number(4.0), create_bin_op('-', create_number (2.0),
+							     create_number (2.0)));
+  CU_ASSERT_NOT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_EQUAL (t1->status & STATUS_CALC_DIV_BY_ZERO, STATUS_CALC_DIV_BY_ZERO);
+  free_calc_element (t1);
+  /* log zero */
+  t1 = create_log (create_number (0.0));
+  CU_ASSERT_NOT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_EQUAL (t1->status & STATUS_CALC_DOMAIN, STATUS_CALC_DOMAIN);
+  free_calc_element (t1);
+  /* log less than zero */
+  t1 = create_log (create_number (-3.0));
+  CU_ASSERT_NOT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_EQUAL (t1->status & STATUS_CALC_DOMAIN, STATUS_CALC_DOMAIN);
+  free_calc_element (t1);
+  /* log zero, complex */
+  t1 = create_log ( create_bin_op('*', create_number (0.0), create_number (28.0)));
+  CU_ASSERT_NOT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_EQUAL (t1->status & STATUS_CALC_DOMAIN, STATUS_CALC_DOMAIN);
+  free_calc_element (t1);
+  /* x in the expression, simple */
+  t1 = create_x ();
+  CU_ASSERT_NOT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_EQUAL (t1->status & STATUS_X_PRESENT, STATUS_X_PRESENT);
+  free_calc_element (t1);
+  /* x in the expression, complex */
+  t1 = create_bin_op ('-', create_x(), create_number(17));
+  CU_ASSERT_NOT_EQUAL (calculate (&t1), 0);
+  CU_ASSERT_EQUAL (t1->status & STATUS_X_PRESENT, STATUS_X_PRESENT);
+  free_calc_element (t1);
+}
+
 int main () {
-  CU_pSuite cf_suite, axb_suite;
+  CU_pSuite cf_suite, axb_suite, calc_suite;
   CU_initialize_registry ();
   cf_suite = CU_add_suite ("Create and free expression elements", NULL, NULL);
   CU_add_test (cf_suite, "Create and free number test", test_number_cf);
@@ -199,6 +354,9 @@ int main () {
   axb_suite = CU_add_suite ("a*x + b creation and access", NULL, NULL);
   CU_add_test (axb_suite, "Create, free and access a*x + b test", test_create_access_axb);
   CU_add_test (axb_suite, "Bad a*x + b access test", test_bad_axb);
+  calc_suite = CU_add_suite ("Simple calculations", NULL, NULL);
+  CU_add_test (calc_suite, "Simple and correct calculations", test_calc_good);
+  CU_add_test (calc_suite, "Bad calculations", test_calc_bad);
   CU_basic_set_mode (CU_BRM_VERBOSE);
   CU_basic_run_tests();
   CU_cleanup_registry ();
