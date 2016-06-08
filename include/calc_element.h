@@ -44,4 +44,9 @@ void free_calc_element (CALC_ELEMENT *);
 
 int calculate (CALC_ELEMENT **);
 
+int canonical_form (CALC_ELEMENT **);
+
+CALC_ELEMENT * create_ax_b (double, double);
+int get_ax_b (CALC_ELEMENT *, double *, double *);
+
 #endif
