@@ -20,7 +20,7 @@ CALC_ELEMENT * create_bin_op (char op, CALC_ELEMENT * l, CALC_ELEMENT * r) {
   res->bin_op = (op != '-' ? op : '+'); /* simplification of substraction */
   res->status = l->status | r->status;
   if (op == '-')
-    r->value += -1.0;
+    r->value *= -1.0;
   if (op == '/' && (res->status & STATUS_X_PRESENT))
     res->status |= STATUS_X_IN_DIV;
   res->value = 1.0;
