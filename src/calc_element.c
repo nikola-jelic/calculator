@@ -221,13 +221,14 @@ int get_ax_b (CALC_ELEMENT * e, double * a, double * b) {
     if (e->bin_op == '+') {
       CALC_ELEMENT * num = NULL;
       CALC_ELEMENT * x = NULL;
-      if (e->left->calc_t == CALC_NUM) {
+      if ((e->left->calc_t == CALC_NUM) && (e->right->calc_t == CALC_X)) {
 	num = e->left;
 	x = e->right;
-      } else {
+      } else if ((e->left->calc_t == CALC_X) && (e->right->calc_t == CALC_NUM)) {
 	num = e->right;
 	x = e->left;
-      }
+      } else
+	return -1; /* should be impossible */
       *a = x->value * e->value;
       *b = num->value * e->value;
       return 0;
