@@ -1,0 +1,18 @@
+#ifndef SYMBOLS_H
+#define SYMBOLS_H
+
+typedef enum {
+  PARSE_NUMBER,
+  PARSE_X,
+  PARSE_ADD,
+  PARSE_SUB,
+  PARSE_MULT,
+  PARSE_DIV,
+  PARSE_LOG,
+  PARSE_LPAREN,
+  PARSE_RPAREN,
+  PARSE_NLINE,
+  PARSE_BAD
+} PARSE_SYMBOL;
+
+#endif
