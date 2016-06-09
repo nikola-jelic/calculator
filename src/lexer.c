@@ -115,11 +115,23 @@ bool accept (PARSE_SYMBOL s) {
   }
 }
 
-void clear_line () {
+void clear_line (void) {
   line_pos = 0;
   line_len = 0;
   implicit_mult = false;
   symbol_accepted = true;
+}
+
+bool have_more (void) {
+  return (feof(stdin) == 0);
+}
+
+void get_line (void) {
+  char * res = fgets (in_line, IN_BUF_SIZE, stdin);
+  if (res == NULL) /* nothing read */
+    line_len = 0;
+  else
+    line_len = strlen (in_line);
 }
 
 double get_current_number (void) {

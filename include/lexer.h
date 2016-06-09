@@ -22,7 +22,9 @@ double get_current_number (void);
 PARSE_SYMBOL get_symbol (void);
 void next_symbol(void);
 bool accept (PARSE_SYMBOL s);
-void clear_line ();
+void clear_line (void);
+bool have_more (void);
+void get_line (void);
 
 /* helper functions */
 bool scan_log (void);
