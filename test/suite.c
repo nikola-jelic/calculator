@@ -1,4 +1,5 @@
 #include "calc_element.h"
+#include "lexer.h"
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
@@ -622,8 +623,73 @@ void test_canon_x (void) {
   free_calc_element (t1);
 }
 
+void test_lexer (void) {
+  strcpy(in_line, "14.5");
+  line_len = 4;
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (14.5, get_current_number());
+  clear_line();
+  
+  strcpy (in_line, "(3+(4-1))*5");
+  line_len = 11;
+  CU_ASSERT_TRUE (accept (PARSE_LPAREN));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (3, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_ADD));
+  CU_ASSERT_TRUE (accept (PARSE_LPAREN));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (4, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_SUB));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (1, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_RPAREN));
+  CU_ASSERT_TRUE (accept (PARSE_RPAREN));
+  CU_ASSERT_TRUE (accept (PARSE_MULT));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (5, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_NLINE));
+  clear_line();
+
+  strcpy (in_line, "2 * x + 0.5 = 1");
+  line_len = 15;
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (2, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_MULT));
+  CU_ASSERT_TRUE (accept (PARSE_X));
+  CU_ASSERT_TRUE (accept (PARSE_ADD));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (0.5, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_EQUAL));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (1, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_NLINE));
+  clear_line();
+
+  strcpy (in_line, "2x + 1 = 2(1-x)");
+  line_len = 15;
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (2, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_MULT));
+  CU_ASSERT_TRUE (accept (PARSE_X));
+  CU_ASSERT_TRUE (accept (PARSE_ADD));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (1, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_EQUAL));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (2, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_MULT));
+  CU_ASSERT_TRUE (accept (PARSE_LPAREN));
+  CU_ASSERT_TRUE (accept (PARSE_NUMBER));
+  CU_ASSERT_EQUAL (1, get_current_number());
+  CU_ASSERT_TRUE (accept (PARSE_SUB));
+  CU_ASSERT_TRUE (accept (PARSE_X));
+  CU_ASSERT_TRUE (accept (PARSE_RPAREN));
+  CU_ASSERT_TRUE (accept (PARSE_NLINE));
+  clear_line();
+}
+
 int main () {
-  CU_pSuite cf_suite, axb_suite, calc_suite, canon_suite;
+  CU_pSuite cf_suite, axb_suite, calc_suite, canon_suite, lexer_suite;
   CU_initialize_registry ();
   cf_suite = CU_add_suite ("Create and free expression elements", NULL, NULL);
   CU_add_test (cf_suite, "Create and free number test", test_number_cf);
@@ -640,6 +706,8 @@ int main () {
   CU_add_test (canon_suite, "Canonical form, simple and correct calculations", test_canon_calc_good);
   CU_add_test (canon_suite, "Canonical form, bad calculations", test_canon_calc_bad);
   CU_add_test (canon_suite, "Canonical form, with an x", test_canon_x);
+  lexer_suite = CU_add_suite ("Lexer", NULL, NULL);
+  CU_add_test (lexer_suite, "Multiple tests", test_lexer);
   CU_basic_set_mode (CU_BRM_VERBOSE);
   CU_basic_run_tests();
   CU_cleanup_registry ();

@@ -54,18 +54,23 @@ void next_symbol(void) {
 	break;
       case 'x':
 	symbol = PARSE_X;
+	line_pos++;
 	break;
       case '+':
 	symbol = PARSE_ADD;
+	line_pos++;
 	break;
       case '-':
 	symbol = PARSE_SUB;
+	line_pos++;
 	break;
       case '*':
 	symbol = PARSE_MULT;
+	line_pos++;
 	break;
       case '/':
 	symbol = PARSE_DIV;
+	line_pos++;
 	break;
       case 'l':
 	if (scan_log ()) {
@@ -76,13 +81,20 @@ void next_symbol(void) {
 	break;
       case '(':
 	symbol = PARSE_LPAREN;
+	line_pos++;
 	break;
       case ')':
 	symbol = PARSE_RPAREN;
+	line_pos++;
+	break;
+      case '=':
+	symbol = PARSE_EQUAL;
+	line_pos++;
 	break;
       case '\n':
       case '\r':
 	symbol = PARSE_NLINE;
+	line_pos++;
 	break;
       default:
 	error (0, 0, "lexer error: unexpected character %c on position %d",
@@ -101,6 +113,13 @@ bool accept (PARSE_SYMBOL s) {
     symbol_accepted = false;
     return false;
   }
+}
+
+void clear_line () {
+  line_pos = 0;
+  line_len = 0;
+  implicit_mult = false;
+  symbol_accepted = true;
 }
 
 double get_current_number (void) {
