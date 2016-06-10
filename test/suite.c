@@ -771,9 +771,9 @@ int main () {
   CU_add_test (canon_suite, "Canonical form, bad calculations", test_canon_calc_bad);
   CU_add_test (canon_suite, "Canonical form, with an x", test_canon_x);
   lexer_suite = CU_add_suite ("Lexer", NULL, NULL);
-  CU_add_test (lexer_suite, "Multiple tests", test_lexer);
+  CU_add_test (lexer_suite, "Multiple lexer tests", test_lexer);
   parser_suite = CU_add_suite ("Parser", NULL, NULL);
-  CU_add_test (parser_suite, "Multiple tests", test_parser);
+  CU_add_test (parser_suite, "Multiple parser tests", test_parser);
   CU_basic_set_mode (CU_BRM_VERBOSE);
   CU_basic_run_tests();
   CU_cleanup_registry ();

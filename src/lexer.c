@@ -5,6 +5,7 @@ int line_len = 0;
 int line_pos = 0;
 
 static double number = 0.0;
+static int symbol_pos = 0;
 static bool implicit_mult = false;
 static bool symbol_accepted = true;
 static PARSE_SYMBOL symbol;
@@ -35,6 +36,7 @@ void next_symbol(void) {
 	symbol =  PARSE_NLINE;
 	return;
       }
+      symbol_pos = line_pos;
       switch (in_line[line_pos]) {
       case '0':
       case '1':
@@ -46,11 +48,10 @@ void next_symbol(void) {
       case '7':
       case '8':
       case '9':
-	if (scan_number()) {
+	if (scan_number())
 	  symbol = PARSE_NUMBER;
-	} else {
-	  error (0, 0, "lexer error: expected \"[0-9]*.?[0-9]+\", position %d", line_pos);
-	}
+	else 
+	  symbol = PARSE_BAD;
 	break;
       case 'x':
 	symbol = PARSE_X;
@@ -76,7 +77,7 @@ void next_symbol(void) {
 	if (scan_log ()) {
 	  symbol = PARSE_LOG;
 	} else {
-	  error (0, 0, "lexer error: expected \"log\", position %d", line_pos);
+	  symbol = PARSE_BAD;
 	}
 	break;
       case '(':
@@ -97,8 +98,6 @@ void next_symbol(void) {
 	line_pos++;
 	break;
       default:
-	error (0, 0, "lexer error: unexpected character %c on position %d",
-	       in_line[line_pos], line_pos);
 	symbol =  PARSE_BAD;
 	line_pos++;
       }
@@ -121,6 +120,11 @@ void clear_line (void) {
   line_len = 0;
   implicit_mult = false;
   symbol_accepted = true;
+  symbol_pos = 0;
+}
+
+int get_current_symbol_pos (void) {
+  return symbol_pos;
 }
 
 bool have_more (void) {

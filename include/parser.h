@@ -14,4 +14,6 @@ int parse_number (CALC_ELEMENT **);
 int parse_log (CALC_ELEMENT **);
 int parse_paren_expr (CALC_ELEMENT **);
 
+void parser_error (char *);
+
 #endif

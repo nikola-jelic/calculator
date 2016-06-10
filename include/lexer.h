@@ -23,6 +23,7 @@ PARSE_SYMBOL get_symbol (void);
 void next_symbol(void);
 bool accept (PARSE_SYMBOL s);
 void clear_line (void);
+int get_current_symbol_pos (void);
 bool have_more (void);
 void get_line (void);
 

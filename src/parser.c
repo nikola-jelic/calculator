@@ -13,6 +13,7 @@ int parse_line (CALC_ELEMENT **e1, CALC_ELEMENT **e2) {
   if (!accept (PARSE_NLINE)) {
     free_calc_element (*e1);
     free_calc_element (*e2);
+    parser_error ("\'\\n\'");
     return -1;
   }
   return 0;
@@ -85,14 +86,14 @@ int parse_factor (CALC_ELEMENT **e) {
     return parse_paren_expr (e);
     break;
   default:
-    error (0, 0, "parse error: expected number, x, log or (");
+    parser_error ("\'number\', \'x\', \'log\' or \'(\'");
     return -1;
   }
 }
 
 int parse_log (CALC_ELEMENT ** e) {
   if (!accept (PARSE_LOG)) {
-    error (0, 0, "parser error: expected log");
+    parser_error ("\'log\'");
     return -1;
   }
   return parse_paren_expr (e);
@@ -100,14 +101,17 @@ int parse_log (CALC_ELEMENT ** e) {
 
 int parse_paren_expr (CALC_ELEMENT ** e) {
   CALC_ELEMENT * loc = NULL;
-  if (!accept (PARSE_LPAREN))
+  if (!accept (PARSE_LPAREN)) {
+    parser_error ("\'(\'");
     return -1;
+  }
   if (parse_expression (&loc) != 0) {
     if (loc != NULL)
       free_calc_element (loc);
     return -1;
   }
   if (!accept (PARSE_RPAREN)) {
+    parser_error ("\')\'");
     if (loc != NULL)
       free_calc_element (loc);
     return -1;
@@ -115,3 +119,49 @@ int parse_paren_expr (CALC_ELEMENT ** e) {
   *e = loc;
   return 0;
 }
+
+void parser_error (char * expected) {
+  fprintf (stderr, "parser error: unexpected symbol ");
+  switch (get_symbol()) {
+  case PARSE_NUMBER:
+    fprintf (stderr, "\'number %g\'", get_current_number());
+    break;
+  case PARSE_X:
+    fprintf (stderr, "\'x\'");
+    break;
+  case PARSE_ADD:
+    fprintf (stderr, "\'+\'");
+    break;
+  case PARSE_SUB:
+    fprintf (stderr, "\'-\'");
+    break;
+  case PARSE_MULT:
+    fprintf (stderr, "\'*\'");
+    break;
+  case PARSE_DIV:
+    fprintf (stderr, "\'/\'");
+    break;
+  case PARSE_LOG:
+    fprintf (stderr, "\'log\'");
+    break;
+  case PARSE_LPAREN:
+    fprintf (stderr, "\'(\'");
+    break;
+  case PARSE_RPAREN:
+    fprintf (stderr, "\')\'");
+    break;
+  case PARSE_EQUAL:
+    fprintf (stderr, "\'=\'");
+    break;
+  case PARSE_NLINE:
+    fprintf (stderr, "\'\\n\'");
+    break;
+  case PARSE_BAD:
+    fprintf (stderr, "\'unrecognized %c\'", in_line[get_current_symbol_pos()]);
+    break;
+  }
+  fprintf (stderr, " at position %d, expected %s, skipping line\n",
+	   get_current_symbol_pos(), expected);
+}
+
+
