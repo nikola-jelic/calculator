@@ -717,6 +717,8 @@ void test_parser (void) {
   CU_ASSERT_EQUAL (e1->value, 30);
   free_calc_element (e1);
   clear_line();
+  e1 = NULL;
+  e2 = NULL;
 
   strcpy (in_line, "2 * x + 0.5 = 1");
   line_len = 15;
@@ -733,6 +735,8 @@ void test_parser (void) {
   free_calc_element (e1);
   free_calc_element (e2);
   clear_line();
+  e1 = NULL;
+  e2 = NULL;
   
   strcpy (in_line, "2x + 1 = 2(1-x)");
   line_len = 15;
@@ -750,6 +754,62 @@ void test_parser (void) {
   free_calc_element (e1);
   free_calc_element (e2);
   clear_line();
+  e1 = NULL;
+  e2 = NULL;
+
+  strcpy (in_line, "14.9 + 1 - 2 3.44");
+  line_len = 17;
+  CU_ASSERT_NOT_EQUAL (parse_line (&e1, &e2), 0);
+  clear_line();
+  e1 = NULL;
+  e2 = NULL;
+
+  strcpy (in_line, "((12)");
+  line_len = 5;
+  CU_ASSERT_NOT_EQUAL (parse_line (&e1, &e2), 0);
+  clear_line();
+  e1 = NULL;
+  e2 = NULL;
+
+  strcpy (in_line, "3x + -");
+  line_len = 6;
+  CU_ASSERT_NOT_EQUAL (parse_line (&e1, &e2), 0);
+  clear_line();
+  e1 = NULL;
+  e2 = NULL;
+
+  strcpy (in_line, "60/5/3*8/4");
+  line_len = 10;
+  CU_ASSERT_EQUAL (parse_line (&e1, &e2), 0);
+  CU_ASSERT_EQUAL (canonical_form (&e1), 0);
+  CU_ASSERT_EQUAL (e1->calc_t, CALC_NUM);
+  CU_ASSERT_EQUAL (e1->value, 8);
+  free_calc_element (e1);
+  clear_line();
+  e1 = NULL;
+  e2 = NULL;
+
+  /* log torturing */
+  strcpy (in_line, "log 5)");
+  line_len = 6;
+  CU_ASSERT_NOT_EQUAL (parse_line (&e1, &e2), 0);
+  clear_line();
+  e1 = NULL;
+  e2 = NULL;
+
+  strcpy (in_line, "log(9 ");
+  line_len = 6;
+  CU_ASSERT_NOT_EQUAL (parse_line (&e1, &e2), 0);
+  clear_line();
+  e1 = NULL;
+  e2 = NULL;
+
+  strcpy (in_line, "leg(9)");
+  line_len = 6;
+  CU_ASSERT_NOT_EQUAL (parse_line (&e1, &e2), 0);
+  clear_line();
+  e1 = NULL;
+  e2 = NULL;
 }
 
 int main () {

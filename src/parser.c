@@ -12,8 +12,12 @@ int parse_line (CALC_ELEMENT **e1, CALC_ELEMENT **e2) {
   }
   if (!accept (PARSE_NLINE)) {
     free_calc_element (*e1);
-    free_calc_element (*e2);
-    parser_error ("\'\\n\'");
+    if (*e2 != NULL) {
+      free_calc_element (*e2);
+      parser_error ("\'\\n\'");
+    } else
+      parser_error ("\'\\n\' or \'=\'");
+    
     return -1;
   }
   return 0;

@@ -26,6 +26,7 @@ void next_symbol(void) {
   } else {
     if (implicit_mult && ((in_line[line_pos] == '(') || (in_line[line_pos] == 'x'))) {
       implicit_mult = false;
+      symbol_pos = line_pos;
       symbol =  PARSE_MULT;
       return;
     } else {
@@ -33,6 +34,7 @@ void next_symbol(void) {
       while ((line_pos < line_len) && isblank(in_line[line_pos]))
 	line_pos++;
       if (line_pos == line_len) {
+	symbol_pos = line_pos;
 	symbol =  PARSE_NLINE;
 	return;
       }
