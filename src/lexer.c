@@ -100,6 +100,7 @@ void next_symbol(void) {
 	error (0, 0, "lexer error: unexpected character %c on position %d",
 	       in_line[line_pos], line_pos);
 	symbol =  PARSE_BAD;
+	line_pos++;
       }
     }
   }

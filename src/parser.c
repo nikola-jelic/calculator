@@ -1,13 +1,19 @@
 #include "parser.h"
 
 int parse_line (CALC_ELEMENT **e1, CALC_ELEMENT **e2) {
-  if (parse_expression (e1) != 0)
+  if (parse_expression (e1) != 0) {
     return -1;
+  }
   if (accept (PARSE_EQUAL)) {
     if (parse_expression (e2) != 0) {
       free_calc_element (*e1);
       return -1;
     }
+  }
+  if (!accept (PARSE_NLINE)) {
+    free_calc_element (*e1);
+    free_calc_element (*e2);
+    return -1;
   }
   return 0;
 }
@@ -101,7 +107,7 @@ int parse_paren_expr (CALC_ELEMENT ** e) {
       free_calc_element (loc);
     return -1;
   }
-  if (!accept (PARSE_LPAREN)) {
+  if (!accept (PARSE_RPAREN)) {
     if (loc != NULL)
       free_calc_element (loc);
     return -1;
