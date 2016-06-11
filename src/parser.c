@@ -1,6 +1,9 @@
 #include "parser.h"
 
 int parse_line (CALC_ELEMENT **e1, CALC_ELEMENT **e2) {
+  if (accept (PARSE_NLINE)) {
+    return 0;
+  }
   if (parse_expression (e1) != 0) {
     return -1;
   }
