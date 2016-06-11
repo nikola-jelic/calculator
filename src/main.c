@@ -18,7 +18,7 @@ int main () {
 	/* nothing */
       } else if (e2 == NULL) { /* simple calculation */
 	if (e1->status & STATUS_X_PRESENT) { /* check for x */
-	  fprintf (stderr, "x present in the \n");
+	  fprintf (stderr, "x present in the expression\n");
 	} else { /* calculation */
 	  if (calculate (&e1) == 0) {
 	    fprintf (stdout, "%g\n", e1->value);
