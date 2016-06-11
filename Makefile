@@ -29,6 +29,7 @@ ${TEST}/suite.o: ${TEST}/suite.c ${INCLUDE}/parser.h ${INCLUDE}/lexer.h ${INCLUD
 
 ${TARGET}: ${SRC}/calc_element.o ${SRC}/lexer.o ${SRC}/parser.o ${SRC}/main.o
 	${CC} ${LDFLAGS} -o $@ ${SRC}/calc_element.o ${SRC}/lexer.o ${SRC}/parser.o ${SRC}/main.o
+	strip $@
 
 ${SUITE}: ${TEST}/calc_element.o ${TEST}/lexer.o ${TEST}/parser.o ${TEST}/suite.o
 	${CC} ${TEST_LDFLAGS} -o $@ ${TEST}/calc_element.o ${TEST}/lexer.o ${TEST}/parser.o ${TEST}/suite.o

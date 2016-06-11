@@ -99,11 +99,17 @@ int parse_factor (CALC_ELEMENT **e) {
 }
 
 int parse_log (CALC_ELEMENT ** e) {
+  CALC_ELEMENT * t = NULL;
   if (!accept (PARSE_LOG)) {
     parser_error ("\'log\'");
     return -1;
   }
-  return parse_paren_expr (e);
+  if (parse_paren_expr (&t) == -1)
+    return -1;
+  else {
+    *e = create_log (t);
+    return 0;
+  }
 }
 
 int parse_paren_expr (CALC_ELEMENT ** e) {
