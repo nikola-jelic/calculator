@@ -1,0 +1,57 @@
+----------
+Calculator
+---------
+
+A simple command line calculator, with the ability to solve simple linear equations.
+
+--------------------------
+Compiling and dependencies
+--------------------------
+
+Simply run `make` in the root of the project directory. The executable `calc` can be
+found in the 'bin' subdirectory.
+
+In order to run the test suite for the project, there are two dependencies:
+1. CUunit (required)
+2. Valgrind (optional)
+CUnit is required for compilation and running of test suite. Valgrind is used for an
+in-depth memory usage analysis.
+The executable `suite` can be found in the 'test' subdirectory.
+To run valgrind memory test with the test suite, you can:
+1. make valgrind
+2. run manually `valgrind ./test/suite` from the command line
+
+-----
+Usage
+-----
+
+Calculator supports the following mathematical operators: multiplication, division,
+addition, substraction and logarithm. It also supports parentheses.
+
+Calculator works in two modes: simple calculation and linear equation solving.
+Simple calculations take the form of an expression, while linear equations take the form
+`expression` = `expression`.
+
+Expressions used in linear equations can have variable `x` present - the application will
+try to calculate the solution for the equation without an unknown variable, but there
+are only two possibilities in that case: either all numbers satisfy that equation, or none
+do.
+
+Since this is a fairly simple equation solver, variable `x` is prohibited from taking
+part in division and logarithm. These operations can appear in the linear equation, but
+variable `x` must not take part in them, for example: 3x + 4/2 = 18.
+
+If the application detects that the equation is not linear, it will repert error and
+stop trying to solve it, for example: 4x * (x + 2) = 8/19.
+
+-------------------
+Future improvements
+-------------------
+
+In order to make the calculator a more complete application, several improvements could
+be made:
+
+* Unary minus operator.
+* More mathematical functions with [0..n] arguments.
+* Higher order equation solver.
+
