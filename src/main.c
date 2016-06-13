@@ -19,6 +19,77 @@ void cleanup(void);
  */
 void print_usage(void);
 
+/**
+ * \mainpage Calculator
+ * \tableofcontents
+ * \section intro_sec Introduction
+ * \b calc is a command line tool for simple calculations and linear equation solving.
+ * It accepts four basic arithmetic operations, as well as logarithms.
+ * \section comm_l Command Line arguments
+ * * -i <file>: Will use <file> instead of standard input.
+ * * -o <file>: Will use <file> instead of standard output.
+ * * -e <file>: Will use <file> instead of standard error, and will append to it.
+ * * -v: Prints version number and exits.
+ * * -h: Prints usage help and exits.
+ * \section grammar Accepted Input Format
+ * The application can recognize the following grammar for input:
+ * \verbatim
+     line = '\n'
+          | expr '\n'
+          | expr '=' expr '\n'
+     expr = term ((-|+) term)*
+     term = factor ((*|/) factor)*
+     factor = [0-9]*.?[0-9]+
+            | 'x'
+            | '(' expr ')'
+            | 'log' '(' expr ')'
+ \endverbatim
+ * As a special case, the lexer will recognize implicit multiplications in the following 
+ * cases:
+ * * nx
+ * * n(expr)
+ *
+ * where n is a floating point number. No spaces are allowed between the number and the
+ * following 'x' or '('.
+ *
+ * End-of-file can be entered by pressing Ctrl+D. This will end the application.
+ * \section s_calc Simple Calculations
+ * Calculations are possible when these conditions are met:
+ * * Input is in the form of 'expr \\n'
+ * * Unknown variable 'x' is absent form the expresion
+ * * There are no divisions by zero
+ * * No logarithm is used with an argument which is lesser than or equal to zero
+ *
+ * If any of the conditions are not met, an appropriate error
+ * will be displayed.
+ *
+ * An example of a simple calculation:
+ *
+ * _input_: 14 + 9/3
+ *
+ * _output_: 17
+ * \section lin_eq Linear Equation Solving
+ * In order to solve the linear equation, the following conditions must be met:
+ * * Input line is in the for of 'expr = expr \\n'
+ * * Unknown variable 'x' is not involved in division or logarithm
+ * * Equation is linear, which implies that there are no multiplications between two
+ * expresions containing non-zero coefficients of 'x'. For example, 'x * (2x - 4)' is
+ * not allowed, while '(2x + 4 - x + 9/3 - x) * (4x - 2)' is allowed, since the first part
+ * of the expression will lose all instances of 'x'.
+ *
+ * An example of a linear equation:
+ *
+ * _input_: 3x - 6*log (19) = (2x + 4)*3
+ *
+ * _output_: x = -9.88888
+ * \section future Future improvements
+ * There are several improvements which could make \b calc a more complete application:
+ * * Unary minus operator - we sould redifine factor slightly
+ * * 'x' on the left side of the division - it would require small alterations in the parser and expression creation.
+ * * More mathematical functions, such as exponentiation, trigonometry functionts, etc. - we would need a more generalized function call recognizer in the grammar
+ * * Higher order equation solver - quadratic equations would be relatively easy, while higher order function would require some redesign
+ */
+
 int main(int argc, char *argv[])
 {
 	int opt;

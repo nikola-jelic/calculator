@@ -58,6 +58,8 @@ variable `x` must not take part in them, for example: 3x + 4/2 = 18.
 If the application detects that the equation is not linear, it will repert error and
 stop trying to solve it, for example: 4x * (x + 2) = 8/19.
 
+Application can be closed by inputing the EOF (end of file) with Ctrl+D.
+
 -------------------
 Future improvements
 -------------------
@@ -66,6 +68,7 @@ In order to make the calculator a more complete application, several improvement
 be made:
 
 * Unary minus operator.
+* Allowing 'x' to be on the left side of the divison.
 * More mathematical functions with [0..n] arguments.
 * Higher order equation solver.
 
