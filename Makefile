@@ -11,7 +11,7 @@ TEST_LDFLAGS = ${LDFLAGS} -lcunit
 TARGET = ${BIN}/calc
 SUITE = ${TEST}/suite
 
-all: ${TARGET} ${SUITE}
+all: ${TARGET}
 
 ${SRC}/calc_element.o: ${SRC}/calc_element.c ${INCLUDE}/calc_element.h
 ${SRC}/lexer.o: ${SRC}/lexer.c ${INCLUDE}/lexer.h ${INCLUDE}/symbols.h
@@ -39,6 +39,9 @@ clean:
 	rm -f ${TEST}/*.o
 	rm -f ${TARGET}
 	rm -f ${SUITE}
+
+test: ${SUITE}
+	./${SUITE}
 
 valgrind: ${SUITE}
 	valgrind ./${SUITE}

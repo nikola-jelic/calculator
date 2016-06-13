@@ -16,17 +16,31 @@ In order to run the test suite for the project, there are two dependencies:
 2. Valgrind (optional)
 CUnit is required for compilation and running of test suite. Valgrind is used for an
 in-depth memory usage analysis.
+In order to compile the test suite, run:
+`make test`
 The executable `suite` can be found in the 'test' subdirectory.
 To run valgrind memory test with the test suite, you can:
 1. make valgrind
 2. run manually `valgrind ./test/suite` from the command line
+
+----------------------
+Command line arguments
+----------------------
+
+* -i <file>	Will use <file> instead of standard input.
+* -o <file>	Will use <file> instead of standard output.
+* -e <file>	Will use <file> instead of standard error, and will append to it.
+* -v 		Prints version number and exits.
+* -h		Prints usage help and exits.
 
 -----
 Usage
 -----
 
 Calculator supports the following mathematical operators: multiplication, division,
-addition, substraction and logarithm. It also supports parentheses.
+addition, substraction and logarithm. It also supports parentheses. There is also
+support for implied multiplication, such as `2x` or `8(4 - x)`. No spaces are allowed
+between the leading number and the following 'x' or '(';
 
 Calculator works in two modes: simple calculation and linear equation solving.
 Simple calculations take the form of an expression, while linear equations take the form
