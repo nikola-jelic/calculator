@@ -836,6 +836,19 @@ void test_parser(void)
 	clear_line();
 	e1 = NULL;
 	e2 = NULL;
+
+	strcpy(in_line, "(2x - 2x + 6) * 4x = 12");
+	line_len = 23;
+	CU_ASSERT_EQUAL(parse_line(&e1, &e2), 0);
+	CU_ASSERT_EQUAL(canonical_form(&e1), 0);
+	CU_ASSERT_EQUAL(get_ax_b(e1, &a, &b), 0);
+	CU_ASSERT_EQUAL(a, 24);
+	CU_ASSERT_EQUAL(b, 0);
+	clear_line();
+	free_calc_element(e1);
+	free_calc_element(e2);
+	e1 = NULL;
+	e2 = NULL;
 }
 
 int main()

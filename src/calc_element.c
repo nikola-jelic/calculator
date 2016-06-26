@@ -189,8 +189,9 @@ int canonical_form(CALC_ELEMENT ** e)
 					return -1;
 				} else {
 					/* we know that at least one a is a zero */
-					*e = create_ax_b(a1 * b2 + a2 * b1,
-							 b1 * b2);
+					*e = create_ax_b(loc->value *
+							 (a1 * b2 + a2 * b1),
+							 loc->value * b1 * b2);
 					free_calc_element(loc);
 					return 0;
 				}

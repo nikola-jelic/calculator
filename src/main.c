@@ -163,13 +163,12 @@ int main(int argc, char *argv[])
 					} else {	/* check for illegal conditions */
 						fprintf(stderr,
 							"the following errors were detected during the calculation:\n");
-						if (e1->
-						    status &
+						if (e1->status &
 						    STATUS_CALC_DIV_BY_ZERO)
 							fprintf(stderr,
 								"\tdivison by zero\n");
-						if (e1->
-						    status & STATUS_CALC_DOMAIN)
+						if (e1->status &
+						    STATUS_CALC_DOMAIN)
 							fprintf(stderr,
 								"\tlogarithm's argument smaller or equal to zero\n");
 					}
